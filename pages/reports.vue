@@ -1,0 +1,15 @@
+<template>
+  <h1>
+    Reports
+  </h1>
+</template>
+
+<script>
+export default {
+    layout: 'Dashboard',
+}
+</script>
+
+<style>
+
+</style>
