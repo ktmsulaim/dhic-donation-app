@@ -45,7 +45,13 @@ export default {
         this.$router.push('/')
         this.$toast.success('Login Success')
       } catch (error) {
-        this.$toast.error(error?.response?.data?.data)
+        let errorMessage = error?.response?.data?.data;
+        
+        if(!errorMessage) {
+          errorMessage = 'Login Failed';
+        }
+        
+        this.$toast.error(errorMessage);
       } finally {
         this.loading = false;
       }

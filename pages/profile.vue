@@ -1,19 +1,20 @@
 <template>
-  <h1>
-    Reports
-  </h1>
+  <div>
+      <h1>Profile page</h1>
+  </div>
 </template>
 
 <script>
 export default {
+    name: 'ProfilePage',
     layout: 'Dashboard',
     head() {
         return {
-            title: 'Reports',
+            title: 'Profile',
         }
     },
     created() {
-      this.$store.commit('setPageTitle', 'Reports');
+        this.$store.commit('setPageTitle', 'Profile')
     }
 }
 </script>

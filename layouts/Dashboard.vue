@@ -30,9 +30,12 @@
               <i class="el-icon-s-unfold" v-if="drawer"></i>
               <i class="el-icon-s-fold" v-else></i>
             </span>
+            <span class="page-title">
+              {{ $store.state.pageTitle }}
+            </span>
           </el-col>
           <el-col :span="6" class="text-right"> 
-          <el-dropdown>
+          <el-dropdown @command="dropdownAction($event)">
             <div class="user-profile">
               <el-avatar
                 size="small"
@@ -41,8 +44,8 @@
               <span class="name">{{ user.name }}</span>
             </div>
             <el-dropdown-menu slot="dropdown">
-              <el-dropdown-item icon="el-icon-user">Profile</el-dropdown-item>
-              <el-dropdown-item icon="el-icon-refresh-left" @click="logout"
+              <el-dropdown-item command="profile" icon="el-icon-user">Profile</el-dropdown-item>
+              <el-dropdown-item command="logout" icon="el-icon-refresh-left" @click="logout"
                 >Logout</el-dropdown-item
               >
             </el-dropdown-menu>
@@ -89,10 +92,26 @@ export default {
     },
   },
   methods: {
+    dropdownAction(value) {
+      if(value) {
+        if(value === 'logout') {
+          this.logout()
+        } else if(value === 'profile') {
+          this.$router.push('/profile')
+        }
+      }
+    },
     async logout() {
       try {
+        const loading = this.$loading({
+          lock: true,
+          text: 'Signing out...',
+          spinner: 'el-icon-loading',
+          background: 'rgba(0, 0, 0, 0.7)'
+        });
         await this.$auth.logout()
         this.$router.push('/login')
+        loading.close()
       } catch (error) {
         this.$toast.error(error.response?.data?.data)
       }

@@ -22,7 +22,10 @@ export default {
   ],
 
   // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
-  plugins: ['@/plugins/element-ui'],
+  plugins: [
+    '@/plugins/element-ui',
+    {src: '@/plugins/vue-chart', mode: 'client'},
+  ],
 
   // Auto import components: https://go.nuxtjs.dev/config-components
   components: true,
@@ -31,6 +34,7 @@ export default {
   buildModules: [
     // https://go.nuxtjs.dev/typescript
     '@nuxt/typescript-build',
+    '@nuxtjs/device'
   ],
 
   // Modules: https://go.nuxtjs.dev/config-modules
@@ -40,7 +44,9 @@ export default {
     '@nuxtjs/auth-next',
     '@nuxtjs/toast'
   ],
-
+  env: {
+    baseUrl: process.env.BASE_URL || 'http://localhost:8000/api',
+  },
   // Axios module configuration: https://go.nuxtjs.dev/config-axios
   axios: {
     // Workaround to avoid enforcing hard-coded localhost:3000: https://github.com/nuxt-community/axios-module/issues/308
@@ -65,7 +71,8 @@ export default {
       local: {
         token: {
           property: 'data.token',
-          global: true
+          global: true,
+          maxAge: 86400,
         },
         user: {
           property: 'data',
