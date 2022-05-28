@@ -2,11 +2,28 @@
   <div>
     <div class="toolbar">
       <div class="left">
-        <el-button size="small" type="secondary" @click="$router.push('/students/create')">Create new</el-button>
-        <import-students @refresh="fetchStudents"></import-students>
+        <el-button
+          size="small"
+          type="secondary"
+          @click="$router.push('/students/create')"
+          >Create new</el-button
+        >
+        <import-students @refresh="refresh"></import-students>
+        <el-input
+          size="small"
+          placeholder="Type something"
+          prefix-icon="el-icon-search"
+          v-model="search"
+          :clearable="true"
+          @clear="refresh"
+        >
+        </el-input>
       </div>
       <div class="right">
-        <edit-students :students="selectedStudents"></edit-students>
+        <edit-students
+          @refresh="refresh"
+          :students="selectedStudents"
+        ></edit-students>
       </div>
     </div>
     <el-skeleton v-if="loading" :rows="4" animated />
@@ -19,6 +36,17 @@
       >
         <el-table-column type="selection" width="55"> </el-table-column>
         <el-table-column property="name" label="Name" width="250">
+          <template slot-scope="scope">
+            <el-popover
+              placement="top-start"
+              trigger="click"
+            >
+              <div class="student-summary">
+                <el-avatar :size="100" :src="getProfilePhoto(scope.row)"></el-avatar>
+              </div>
+              <p slot="reference">{{ scope.row.name }}</p>
+            </el-popover>
+          </template>
         </el-table-column>
         <el-table-column property="adno" label="AD.NO" width="120">
         </el-table-column>
@@ -36,12 +64,15 @@
         </el-table-column>
         <el-table-column property="subscription" label="Donation" width="200">
           <template slot-scope="scope">
-            {{ scope.row.subscription }}
+            {{ scope.row.subscription_summary }}
           </template>
         </el-table-column>
         <el-table-column label="Actions">
           <template slot-scope="scope">
-            <el-button type="primary" size="small" @click="edit(scope.row.id)">Edit</el-button>
+            <el-button type="primary" size="small" @click="view(scope.row.id)">View</el-button>
+            <el-button size="small" @click="edit(scope.row.id)"
+              >Edit</el-button
+            >
           </template>
         </el-table-column>
       </el-table>
@@ -61,6 +92,8 @@
 </template>
 
 <script>
+import _ from 'lodash'
+
 export default {
   name: 'StudentsIndexPage',
   layout: 'Dashboard',
@@ -76,7 +109,9 @@ export default {
         data: [],
         pagination: {},
       },
-      selectedStudents : [],
+      currentPage: 1,
+      selectedStudents: [],
+      search: null,
     }
   },
   methods: {
@@ -86,7 +121,7 @@ export default {
         const response = await this.$axios.get(link)
         this.students = response.data
       } catch (error) {
-          console.error(error);
+        console.error(error)
         this.$toast.error(
           error.response?.data.message || 'Failed to load students'
         )
@@ -95,14 +130,54 @@ export default {
       }
     },
     selectStudents(students) {
-      this.selectedStudents = students;
+      this.selectedStudents = students
     },
     edit(id) {
-      this.$router.push(`/students/edit/${id}`);
+      this.$router.push(`/students/edit/${id}`)
+    },
+    view(id) {
+      this.$router.push(`/students/${id}`)
     },
     changePage(page) {
-      this.fetchStudents(`/students?page=${page}`)
+      this.currentPage = page
+      let url = `/students?page=${page}`
+
+      if (this.search) {
+        url += `&q=${this.search}`
+      }
+
+      this.fetchStudents(url)
     },
+    refresh() {
+      let page = this.currentPage ? `?page=${this.currentPage}` : ''
+
+      if (this.search) {
+        page.includes('?')
+          ? (page += `&q=${this.search}`)
+          : (page += `?q=${this.search}`)
+      }
+
+      this.fetchStudents(`/students${page}`)
+    },
+    searchForStudents(value) {
+      if (value) {
+        this.fetchStudents(`/students?q=${value}`)
+      } else {
+        this.fetchStudents()
+      }
+    },
+    getProfilePhoto(student) {
+      if (student.photo) {
+        return student.photo.thumbnail
+      } else {
+        return "https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png";
+      }
+    },
+  },
+  watch: {
+    search: _.debounce(function (value) {
+      this.searchForStudents(value)
+    }, 500),
   },
   created() {
     this.$store.commit('setPageTitle', 'Students')
