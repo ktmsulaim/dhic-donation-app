@@ -10,7 +10,9 @@
           DH
         </div>
       </div>
-      <el-menu :router="true" :collapse="drawer" :default-active="$route.path">
+      <el-menu :router="true" :collapse="drawer" :default-active="$route.path" background-color="#545c64"
+      text-color="#fff"
+      active-text-color="#ffd04b">
         <el-menu-item
           v-for="(link, i) in links"
           :key="i"

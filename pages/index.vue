@@ -1,7 +1,22 @@
 <template>
   <div>
+    <el-row :gutter="10" v-if="loading">
+      <el-col :lg="6" :md="12" :sm="18" :xs="24">
+        <el-skeleton :rows="3" animated />
+      </el-col>
+      <el-col :lg="6" :md="12" :sm="18" :xs="24">
+        <el-skeleton :rows="3" animated />
+      </el-col>
+      <el-col :lg="6" :md="12" :sm="18" :xs="24">
+        <el-skeleton :rows="3" animated />
+      </el-col>
+      <el-col :lg="6" :md="12" :sm="18" :xs="24">
+        <el-skeleton :rows="3" animated />
+      </el-col>
+    </el-row>
+    
     <section class="summary-count">
-      <el-row v-if="Object.keys(reports).length" :gutter="10">
+      <el-row v-if="hasReport" :gutter="10">
         <el-col :lg="6" :md="12" :sm="18" :xs="24">
           <el-card>
             <div class="title">Total students</div>
@@ -34,7 +49,7 @@
         </el-col>
       </el-row>
     </section>
-    <section class="charts">
+    <section v-if="hasReport" class="charts">
       <el-row :gutter="10">
         <el-col :lg="12" :md="12" :sm="24">
           <el-card>
@@ -72,6 +87,7 @@ export default {
   },
   data() {
     return {
+      loading: false,
       reports: {},
       paidData: {
         labels: [],
@@ -141,26 +157,38 @@ export default {
       },
     }
   },
+  computed: {
+    hasReport() {
+      return Object.keys(this.reports).length;
+    }
+  },
   methods: {
     async getReports() {
-      const response = await this.$axios.get('reports/summary')
-      this.reports = response.data.data
-      this.dueData.labels =
-        this.reports.amount_last_six_months.amount_due.amount.map(
-          (item) => item.label
-        )
-      this.dueData.datasets[0].data =
-        this.reports.amount_last_six_months.amount_due.amount.map(
-          (item) => item.amount
-        )
-      this.paidData.labels =
-        this.reports.amount_last_six_months.amount_paid.amount.map(
-          (item) => item.label
-        )
-      this.paidData.datasets[0].data =
-        this.reports.amount_last_six_months.amount_paid.amount.map(
-          (item) => item.amount
-        )
+      try {
+        this.loading = true;
+        const response = await this.$axios.get('reports/summary')
+        this.reports = response.data.data
+        this.dueData.labels =
+          this.reports.amount_last_six_months.amount_due.amount.map(
+            (item) => item.label
+          )
+        this.dueData.datasets[0].data =
+          this.reports.amount_last_six_months.amount_due.amount.map(
+            (item) => item.amount
+          )
+        this.paidData.labels =
+          this.reports.amount_last_six_months.amount_paid.amount.map(
+            (item) => item.label
+          )
+        this.paidData.datasets[0].data =
+          this.reports.amount_last_six_months.amount_paid.amount.map(
+            (item) => item.amount
+          )
+      } catch (error) {
+        this.$toast.error("Couldn't fetch reports")
+      } finally {
+        this.loading = false;
+      }
     },
   },
   created() {
