@@ -175,6 +175,13 @@ body {
     }
 }
 
+.page-header-mobile {
+    margin-bottom: 15px;
+    font-size: .85rem;
+    color: #999;
+}
+
+
 .el-aside {
     min-height: 100vh;
     background: white;
@@ -207,6 +214,16 @@ body {
 
     .el-menu {
         height: 100%;
+
+        &.no-border {
+            border-right: none;
+        }
+    }
+}
+
+.el-menu {
+    &.no-border {
+        border-right: none;
     }
 }
 
@@ -218,6 +235,15 @@ body {
     text-align: center;
 }
 
+.el-drawer {
+    background-color: #545c64;
+    .el-drawer__header{
+        color: #efefef;
+        border-bottom: 1px solid #676f78;
+        padding-bottom: 10px;
+        margin-bottom: 10px;
+    }
+}
 
 .summary-count {
     margin-bottom: 20px;
@@ -233,6 +259,33 @@ body {
         font-size: 1.25rem;
         font-weight: 600;
         margin-bottom: 10px;
+    }
+
+    @media screen and (max-width: 992px) {
+        margin-bottom: 0;
+    }
+}
+
+@media screen and (max-width: 992px) {
+    .el-row {
+        display: flex;
+        flex-direction: column;
+
+        .order-1 {
+            order: 1;
+        }
+
+        .order-2 {
+            order: 2;
+        }
+    }
+
+    .el-row--flex.is-align-middle {
+        flex-direction: row;
+    }
+
+    .el-card {
+        margin-bottom: 20px;
     }
 }
 
@@ -321,6 +374,18 @@ body {
 
 .student-summary {
     text-align: center;
+
+    h3 {
+        font-weight: 600;
+        font-size: 0.85rem;
+        margin-top: 10px;
+    }
+
+    p {
+        font-size: 0.75rem;
+        margin-top: 5px;
+        color: #444;
+    }
 }
 
 .el-descriptions__title {
@@ -339,6 +404,7 @@ body {
 
 .payments-wrapper {
     margin-top: 15px;
+    display: block;
 }
 
 .payment {
@@ -372,6 +438,10 @@ body {
 
     .refresh-payments-wrapper {
         margin-left: 10px;
+    }
+
+    @media screen and (max-width: 992px) {
+        margin-bottom: 20px;
     }
 }
 

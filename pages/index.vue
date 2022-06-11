@@ -56,7 +56,7 @@
             <bar-chart
               :chart-options="chartOptions"
               :chart-data="paidData"
-              :height="100"
+              :height="$device.isMobileOrTablet ? 250 : 100"
               :width="300"
             ></bar-chart>
           </el-card>
@@ -66,7 +66,7 @@
             <bar-chart
               :chart-options="chartOptions"
               :chart-data="dueData"
-              :height="100"
+              :height="$device.isMobileOrTablet ? 250 : 100"
               :width="300"
             ></bar-chart>
           </el-card>

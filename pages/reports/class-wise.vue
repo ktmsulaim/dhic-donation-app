@@ -1,14 +1,14 @@
 <template>
   <div>
     <el-row :gutter="10">
-      <el-col :lg="12" :md="12" :sm="18" :xs="24">
+      <el-col :lg="12" :md="12" :sm="18" :xs="24" :class="{ 'order-2': $device.isMobileOrTablet }">
         <el-card>
-          <el-table v-if="students && students.length" :data="students" style="width: 100%">
-            <el-table-column prop="id" label="ID" width="60">
+          <el-table v-if="students && students.length" :data="students" style="width: 100%" @current-change="selected" highlight-current-row>
+            <el-table-column prop="id" label="ID" width="60" v-if="$device.isDesktop">
             </el-table-column>
             <el-table-column prop="name" label="Name">
             </el-table-column>
-            <el-table-column prop="history" label="Amount" width="150">
+            <el-table-column prop="history" label="Amount" :width="$device.isDesktop ? 150 : null">
               <template slot-scope="scope">
                 {{ filters.status == 'paid' ? scope.row.history.amount_paid : scope.row.history.amount_due }}
               </template>
@@ -17,7 +17,7 @@
           <el-empty v-else description="No data"></el-empty>
         </el-card>
       </el-col>
-      <el-col :lg="6" :md="6" :sm="12" :xs="24">
+      <el-col :lg="6" :md="6" :sm="12" :xs="24" :class="{ 'order-1': $device.isMobileOrTablet }">
         <el-card>
           <p>Filters</p>
           <el-divider></el-divider>
@@ -122,6 +122,11 @@ export default {
         this.loading = false
       }
     },
+    selected($event) {
+      if($event.id) {
+        this.$router.push(`/students/${$event.id}`)
+      }
+    }
   },
   created() {
     this.$store.commit('setPageTitle', 'Class wise report')

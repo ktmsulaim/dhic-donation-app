@@ -33,6 +33,7 @@
         :data="students.data"
         style="width: 100%"
         @selection-change="selectStudents"
+        v-if="$device.isDesktop"
       >
         <el-table-column type="selection" width="55"> </el-table-column>
         <el-table-column property="name" label="Name" width="250">
@@ -76,6 +77,20 @@
           </template>
         </el-table-column>
       </el-table>
+      <div v-else>
+        <el-row :gutter="10">
+          <el-col v-for="student in students.data" :key="student.id" :xs="24" :sm="12" :md="6" :lg="6">
+            <el-card>
+              <div class="student-summary">
+                <el-avatar :size="100" :src="getProfilePhoto(student)"></el-avatar>
+                <h3 @click.once="view(student.id)">{{ student.name }}</h3>
+                <p>{{ student.adno }}</p>
+                <p>{{ student.subscription_summary }}</p>
+              </div>
+            </el-card>
+          </el-col>
+        </el-row>
+      </div>
       <div class="pagination">
         <el-pagination
           layout="prev, pager, next"

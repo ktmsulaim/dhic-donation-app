@@ -1,62 +1,68 @@
 <template>
   <el-container>
-    <el-aside :class="{ 'collapsed': drawer }">
+    <el-drawer
+      title="Donation"
+      :visible.sync="drawer"
+      direction="ltr"
+      size="80%"
+      v-if="$device.isMobileOrTablet"
+    >
+      <div class="drawer">
+        <menu-items :drawer="drawer"></menu-items>
+      </div>
+    </el-drawer>
+    <el-aside v-else :class="{ collapsed: drawer }">
       <div class="logo">
         <div v-if="!drawer">
           Donation
           <span>Darul Hasanath Islamic College</span>
         </div>
-        <div v-else>
-          DH
-        </div>
+        <div v-else>DH</div>
       </div>
-      <el-menu :router="true" :collapse="drawer" :default-active="$route.path" background-color="#545c64"
-      text-color="#fff"
-      active-text-color="#ffd04b">
-        <el-menu-item
-          v-for="(link, i) in links"
-          :key="i"
-          :route="{ path: link.path }"
-          :index="link.path"
-        >
-          <i :class="link.icon"></i>
-          <span>{{ link.name }}</span>
-        </el-menu-item>
-      </el-menu>
+      
+        <menu-items :drawer="drawer"></menu-items>
     </el-aside>
     <el-container>
       <el-header>
-        <el-row type="flex" justify="space-between">
-          <el-col :span="6">
+        <el-row type="flex" justify="space-between" align="middle">
+          <el-col :md="6" :sm="12">
             <span class="drawer-toggler" @click="drawer = !drawer">
-              <i class="el-icon-s-unfold" v-if="drawer"></i>
-              <i class="el-icon-s-fold" v-else></i>
+              <i class="el-icon-more" v-if="drawer"></i>
+              <i class="el-icon-more-outline" v-else></i>
             </span>
-            <span class="page-title">
+            <span v-if="$device.isDesktop" class="page-title">
               {{ $store.state.pageTitle }}
             </span>
           </el-col>
-          <el-col :span="6" class="text-right"> 
-          <el-dropdown @command="dropdownAction($event)">
-            <div class="user-profile">
-              <el-avatar
-                size="small"
-                src="https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png"
-              ></el-avatar>
-              <span class="name">{{ user.name }}</span>
-            </div>
-            <el-dropdown-menu slot="dropdown">
-              <el-dropdown-item command="profile" icon="el-icon-user">Profile</el-dropdown-item>
-              <el-dropdown-item command="logout" icon="el-icon-refresh-left" @click="logout"
-                >Logout</el-dropdown-item
-              >
-            </el-dropdown-menu>
-          </el-dropdown>
+          <el-col :md="6" class="text-right">
+            <el-dropdown @command="dropdownAction($event)">
+              <div class="user-profile">
+                <el-avatar
+                  size="small"
+                  src="https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png"
+                ></el-avatar>
+                <span class="name">{{ user.name }}</span>
+              </div>
+              <el-dropdown-menu slot="dropdown">
+                <el-dropdown-item command="profile" icon="el-icon-user"
+                  >Profile</el-dropdown-item
+                >
+                <el-dropdown-item
+                  command="logout"
+                  icon="el-icon-refresh-left"
+                  @click="logout"
+                  >Logout</el-dropdown-item
+                >
+              </el-dropdown-menu>
+            </el-dropdown>
           </el-col>
         </el-row>
       </el-header>
 
       <el-main>
+        <div class="page-header-mobile" v-if="$device.isMobileOrTablet">
+          {{ $store.state.pageTitle }}
+        </div>
         <Nuxt />
       </el-main>
     </el-container>
@@ -69,23 +75,6 @@ export default {
   data() {
     return {
       drawer: false,
-      links: [
-        {
-          name: 'Dashboard',
-          path: '/',
-          icon: 'el-icon-menu',
-        },
-        {
-          name: 'Students',
-          path: '/students',
-          icon: 'el-icon-user',
-        },
-        {
-          name: 'Reports',
-          path: '/reports',
-          icon: 'el-icon-document',
-        },
-      ],
     }
   },
   computed: {
@@ -95,10 +84,10 @@ export default {
   },
   methods: {
     dropdownAction(value) {
-      if(value) {
-        if(value === 'logout') {
+      if (value) {
+        if (value === 'logout') {
           this.logout()
-        } else if(value === 'profile') {
+        } else if (value === 'profile') {
           this.$router.push('/profile')
         }
       }
@@ -109,8 +98,8 @@ export default {
           lock: true,
           text: 'Signing out...',
           spinner: 'el-icon-loading',
-          background: 'rgba(0, 0, 0, 0.7)'
-        });
+          background: 'rgba(0, 0, 0, 0.7)',
+        })
         await this.$auth.logout()
         this.$router.push('/login')
         loading.close()
@@ -119,6 +108,11 @@ export default {
       }
     },
   },
+  watch: {
+    $route(to, from) {
+      this.drawer = false;
+    }
+  }
 }
 </script>
 

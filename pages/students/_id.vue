@@ -71,6 +71,9 @@
             </el-descriptions-item>
           </el-descriptions>
         </el-card>
+        <div class="subscription-actions" v-if="$device.isMobileOrTablet">
+          <el-button type="secondary" size="small" @click="edit">Edit</el-button>
+        </div>
       </el-col>
     </el-row>
     <el-empty description="No data" v-else></el-empty>
@@ -117,6 +120,9 @@ export default {
         return date
       }
     },
+    edit() {
+      this.$router.push('/students/edit/' + this.student.id);
+    }
   },
   created() {
     this.$store.commit('setPageTitle', 'View student')

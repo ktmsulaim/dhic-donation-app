@@ -27,6 +27,7 @@
           :lg="6"
           :md="12"
           :sm="12"
+          :xs="12"
           v-for="payment in payments"
           :key="payment.id"
         >

@@ -1,7 +1,7 @@
 <template>
   <div>
     <el-row :gutter="10">
-      <el-col :lg="12" :md="12" :sm="24" :xs="24">
+      <el-col :lg="12" :md="12" :sm="24" :xs="24" :class="{ 'order-2': $device.isMobileOrTablet }">
         <el-card>
           <el-form ref="form" :rules="rules" :model="form" label-position="top">
             <el-form-item label="Name" prop="name">
@@ -39,7 +39,7 @@
           </el-form>
         </el-card>
       </el-col>
-      <el-col :lg="12" :md="12" :sm="24" :xs="24">
+      <el-col :lg="12" :md="12" :sm="24" :xs="24" :class="{ 'order-1': $device.isMobileOrTablet }">
         <el-card class="text-center">
           <el-avatar :size="150" :src="photo.preview ? photo.preview : photo.default"></el-avatar>
 
@@ -122,7 +122,7 @@ export default {
         form.append('place', this.form.place)
         form.append(
           'dob',
-          this.form.dob
+          this.form.dob && moment(this.form.dob, true).isValid()
             ? moment(this.form.dob).format('YYYY-MM-DD')
             : moment().format('YYYY-MM-DD')
         )
@@ -131,6 +131,10 @@ export default {
 
         if (this.photo.file) {
           form.append('photo', this.photo.file)
+        }
+
+        if(!this.isEditing) {
+          form.append('adno', this.form.adno);
         }
 
         let url = `/students`;
