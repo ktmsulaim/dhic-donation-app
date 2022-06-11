@@ -6,8 +6,10 @@
       direction="ltr"
       size="80%"
       v-if="$device.isMobileOrTablet"
+      @open="clearSeach"
     >
       <div class="drawer">
+        <search-students ref="seach-students"></search-students>
         <menu-items :drawer="drawer"></menu-items>
       </div>
     </el-drawer>
@@ -107,6 +109,9 @@ export default {
         this.$toast.error(error.response?.data?.data)
       }
     },
+    clearSeach() {
+      this.$refs['seach-students']?.clear();
+    }
   },
   watch: {
     $route(to, from) {
