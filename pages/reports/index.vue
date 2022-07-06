@@ -18,6 +18,15 @@
         </div>
       </el-card>
     </el-col>
+    <el-col :lg="6" :md="6" :sm="12" :xs="24">
+      <el-card>
+        <div class="report">
+          <h3 class="report-header">Amount Due</h3>
+          <p class="report-description">Generate class wise due amount since start date</p>
+          <el-button size="small" @click="goTo('due')">View</el-button>
+        </div>
+      </el-card>
+    </el-col>
   </el-row>
 </template>
 
